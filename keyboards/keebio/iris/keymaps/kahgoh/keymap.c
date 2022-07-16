@@ -8,8 +8,7 @@
 #define _ADJUST 5
 
 enum custom_keycodes {
-  QWERTY = SAFE_RANGE,
-  COLEMAK,
+  LAYOUT = SAFE_RANGE,
   NUMPAD,
   LOWER,
   RAISE,
@@ -93,7 +92,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
      _______, NUMPAD,  _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     QK_BOOT, QWERTY,  COLEMAK, _______, _______, _______,                            _______, RGB_M_R, _______, _______, _______, _______,
+     QK_BOOT, LAYOUT,  _______, _______, _______, _______,                            _______, RGB_M_R, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, _______, _______, _______, _______,                            _______, RGB_M_P, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
@@ -107,15 +106,13 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case QWERTY:
+    case LAYOUT:
       if (record->event.pressed) {
-         set_single_persistent_default_layer(_QWERTY);
-      }
-      return false;
-      break;
-    case COLEMAK:
-      if (record->event.pressed) {
-         set_single_persistent_default_layer(_COLEMAK);
+         if (IS_LAYER_ON_STATE(default_layer_state, _COLEMAK)) {
+            set_single_persistent_default_layer(_QWERTY);
+         } else {
+            set_single_persistent_default_layer(_COLEMAK);
+         }
       }
       return false;
       break;
