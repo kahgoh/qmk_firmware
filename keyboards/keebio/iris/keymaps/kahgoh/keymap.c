@@ -9,6 +9,7 @@
 
 enum custom_keycodes {
   LAYOUT = SAFE_RANGE,
+  LIGHT,
   NUMPAD,
   LOWER,
   RAISE,
@@ -92,9 +93,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //┌────────┬────────┬────────┬────────┬────────┬────────┐                          ┌────────┬────────┬────────┬────────┬────────┬────────┐
      _______, NUMPAD,  _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     QK_BOOT, LAYOUT,  _______, _______, _______, _______,                            _______, RGB_M_R, _______, _______, _______, _______,
+     QK_BOOT, LAYOUT,  _______, _______, _______, _______,                            LIGHT,   _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┤                          ├────────┼────────┼────────┼────────┼────────┼────────┤
-     _______, _______, _______, _______, _______, _______,                            _______, RGB_M_P, _______, _______, _______, _______,
+     _______, _______, _______, _______, _______, _______,                            _______, _______, _______, _______, _______, _______,
   //├────────┼────────┼────────┼────────┼────────┼────────┼────────┐        ┌────────┼────────┼────────┼────────┼────────┼────────┼────────┤
      _______, _______, _______, _______, _______, _______, _______,          _______, _______, _______, _______, _______, _______, _______,
   //└────────┴────────┴────────┴───┬────┴───┬────┴───┬────┴───┬────┘        └───┬────┴───┬────┴───┬────┴───┬────┴────────┴────────┴────────┘
@@ -103,6 +104,25 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   )
 
 };
+
+/**
+ * @brief Cycle between no lighting, rainbow animation and solid back lighting modes. Using a custom 
+ *          "no light" mode instead of RGB_MATRIX_NONE (for some reason, the keyboard keeps going to
+ *          RGB_MATRIX_SOLID_COLOR when we try using RGB_MATRIX_NONE).
+ */
+void next_light_mode(void) {
+   switch(rgb_matrix_get_mode()) {
+      case RGB_MATRIX_CUSTOM_no_light:
+         rgb_matrix_mode(RGB_MATRIX_SOLID_COLOR);
+         break;
+      case RGB_MATRIX_SOLID_COLOR:
+         rgb_matrix_mode(RGB_MATRIX_CYCLE_LEFT_RIGHT);
+         break;
+      default:
+         rgb_matrix_mode(RGB_MATRIX_CUSTOM_no_light);
+         break;
+   }
+}
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
@@ -113,6 +133,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
          } else {
             set_single_persistent_default_layer(_COLEMAK);
          }
+      }
+      return false;
+      break;
+    case LIGHT:
+      if (record->event.pressed) {
+         next_light_mode();
       }
       return false;
       break;
@@ -155,9 +181,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
-   uint8_t mode = rgb_matrix_get_mode();
-   bool off_mode = (mode == RGB_MATRIX_NONE || mode == RGB_MATRIX_SOLID_COLOR);
-
    // Underglow lights for base layer.
    if (IS_LAYER_ON_STATE(default_layer_state, _COLEMAK)) {
       // Indicate Colemak with underglow lights
@@ -168,11 +191,6 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
       for (uint8_t t = 31; t < 34; t++) {
          rgb_matrix_set_color(t, 0, 0, 125);
          rgb_matrix_set_color(t + 34, 0, 0, 125);
-      }
-   } else if (off_mode) {
-      for (uint8_t t = 28; t < 34; t++) {
-         rgb_matrix_set_color(t, RGB_OFF);
-         rgb_matrix_set_color(t + 34, RGB_OFF);
       }
    }
 
@@ -190,11 +208,6 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
          } else if ((i < 28  || 33 < i) && i < 62) {
             rgb_matrix_set_color(i, RGB_OFF);
          }
-      }
-   } else if (off_mode) {
-      for (uint8_t t = 0; t < 28; t++) {
-         rgb_matrix_set_color(t, RGB_OFF);
-         rgb_matrix_set_color(t + 34, RGB_OFF);
       }
    }
 }
