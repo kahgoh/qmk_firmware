@@ -8,12 +8,12 @@
 #define _ADJUST 5
 
 enum custom_keycodes {
-  LAYOUT = SAFE_RANGE,
-  LIGHT,
-  NUMPAD,
-  LOWER,
-  RAISE,
-  ADJUST
+   LAYOUT = SAFE_RANGE,
+   LIGHT,
+   NUMPAD,
+   LOWER,
+   RAISE,
+   ADJUST
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
@@ -125,59 +125,59 @@ void next_light_mode(void) {
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
-  switch (keycode) {
-    case LAYOUT:
-      if (record->event.pressed) {
-         if (IS_LAYER_ON_STATE(default_layer_state, _COLEMAK)) {
-            set_single_persistent_default_layer(_QWERTY);
-         } else {
-            set_single_persistent_default_layer(_COLEMAK);
+   switch (keycode) {
+      case LAYOUT:
+         if (record->event.pressed) {
+            if (IS_LAYER_ON_STATE(default_layer_state, _COLEMAK)) {
+               set_single_persistent_default_layer(_QWERTY);
+            } else {
+               set_single_persistent_default_layer(_COLEMAK);
+            }
          }
-      }
-      return false;
-      break;
-    case LIGHT:
-      if (record->event.pressed) {
-         next_light_mode();
-      }
-      return false;
-      break;
-    case NUMPAD:
-      if (record->event.pressed) {
-         layer_invert(_NUMPAD);
-      }
-      return false;
-      break;
-    case LOWER:
-      if (record->event.pressed) {
-        layer_on(_LOWER);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      } else {
-        layer_off(_LOWER);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      }
-      return false;
-      break;
-    case RAISE:
-      if (record->event.pressed) {
-        layer_on(_RAISE);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      } else {
-        layer_off(_RAISE);
-        update_tri_layer(_LOWER, _RAISE, _ADJUST);
-      }
-      return false;
-      break;
-    case ADJUST:
-      if (record->event.pressed) {
-        layer_on(_ADJUST);
-      } else {
-        layer_off(_ADJUST);
-      }
-      return false;
-      break;
-  }
-  return true;
+         return false;
+         break;
+      case LIGHT:
+         if (record->event.pressed) {
+            next_light_mode();
+         }
+         return false;
+         break;
+      case NUMPAD:
+         if (record->event.pressed) {
+            layer_invert(_NUMPAD);
+         }
+         return false;
+         break;
+      case LOWER:
+         if (record->event.pressed) {
+            layer_on(_LOWER);
+            update_tri_layer(_LOWER, _RAISE, _ADJUST);
+         } else {
+            layer_off(_LOWER);
+            update_tri_layer(_LOWER, _RAISE, _ADJUST);
+         }
+         return false;
+         break;
+      case RAISE:
+         if (record->event.pressed) {
+            layer_on(_RAISE);
+            update_tri_layer(_LOWER, _RAISE, _ADJUST);
+         } else {
+            layer_off(_RAISE);
+            update_tri_layer(_LOWER, _RAISE, _ADJUST);
+         }
+         return false;
+         break;
+      case ADJUST:
+         if (record->event.pressed) {
+            layer_on(_ADJUST);
+         } else {
+            layer_off(_ADJUST);
+         }
+         return false;
+         break;
+   }
+   return true;
 }
 
 void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
