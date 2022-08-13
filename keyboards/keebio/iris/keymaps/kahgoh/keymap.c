@@ -180,30 +180,54 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
    return true;
 }
 
+uint8_t min(uint8_t a, uint8_t b) {
+   if (a < b) {
+      return a;
+   }
+   return b;
+}
+
+uint8_t max(uint8_t a, uint8_t b) {
+   if (a > b) {
+      return a;
+   }
+   return b;
+}
+
+void set_range(uint8_t start, uint8_t stop, uint8_t led_min, uint8_t led_max, uint8_t red, uint8_t green, uint8_t blue) {
+   if (stop < led_min || led_max < start) {
+      // Out of range
+      return;
+   }
+
+   for(uint8_t i=max(start, led_min); i < min(stop, led_max); i++) {
+      rgb_matrix_set_color(i, red, blue, green);
+   }
+}
+
 void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
    // Underglow lights for base layer.
    if (IS_LAYER_ON_STATE(default_layer_state, _COLEMAK)) {
-      // Indicate Colemak with underglow lights
-      for (uint8_t t = 28; t < 31; t++) {
-         rgb_matrix_set_color(t, 0, 125, 0);
-         rgb_matrix_set_color(t + 34, 0, 125, 0);
-      }
-      for (uint8_t t = 31; t < 34; t++) {
-         rgb_matrix_set_color(t, 0, 0, 125);
-         rgb_matrix_set_color(t + 34, 0, 0, 125);
-      }
+      set_range(28, 31, led_min, led_max, 0, 0, 125);
+      set_range(62, 65, led_min, led_max, 0, 0, 125);
+      set_range(31, 34, led_min, led_max, 0, 125, 0);
+      set_range(65, 68, led_min, led_max, 0, 125, 0);
    }
 
    // Keylights for numpad.
    if (IS_LAYER_ON(_NUMPAD)) {
       for (uint8_t i = led_min; i < led_max; i++) {
          if ((i >= 41 && i <= 43) || (i >= 48 && i <= 50) || (i >= 53 && i <= 55) || i == 58) {
+            // numpad numbers
             rgb_matrix_set_color(i, 179, 92, 45);
          } else if (i == 40 || i == 51 || i == 44 || i == 47 || i == 56) {
+            // operaters
             rgb_matrix_set_color(i, 75, 0, 128);
          } else if (i == 52) {
+            // numpad decimal
             rgb_matrix_set_color(i, 0, 0, 50);
          } else if (i == 57 || i == 60) {
+            // enter
             rgb_matrix_set_color(i, 0, 150, 0);
          } else if ((i < 28  || 33 < i) && i < 62) {
             rgb_matrix_set_color(i, RGB_OFF);
