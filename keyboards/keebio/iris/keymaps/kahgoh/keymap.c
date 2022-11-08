@@ -229,7 +229,7 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
          } else if (i == 57 || i == 60) {
             // enter
             rgb_matrix_set_color(i, 0, 150, 0);
-         } else if ((i < 28  || 33 < i) && i < 62) {
+         } else if (HAS_FLAGS(g_led_config.flags[i], LED_FLAG_KEYLIGHT)) {
             rgb_matrix_set_color(i, RGB_OFF);
          }
       }
