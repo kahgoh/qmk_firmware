@@ -205,7 +205,11 @@ void set_range(uint8_t start, uint8_t stop, uint8_t led_min, uint8_t led_max, ui
    }
 }
 
-void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
+   if (!rgb_matrix_indicators_user()) {
+      return false;
+   }
+
    // Underglow lights for base layer.
    if (IS_LAYER_ON_STATE(default_layer_state, _COLEMAK)) {
       set_range(28, 31, led_min, led_max, 0, 0, 125);
@@ -234,4 +238,5 @@ void rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
          }
       }
    }
+   return true;
 }
