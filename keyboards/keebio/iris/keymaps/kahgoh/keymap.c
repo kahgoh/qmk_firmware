@@ -211,7 +211,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
    }
 
    // Underglow lights for base layer.
-   if (IS_LAYER_ON_STATE(default_layer_state, _COLEMAK)) {
+   if (IS_LAYER_ON_STATE(default_layer_state, _QWERTY)) {
       set_range(28, 31, led_min, led_max, 0, 0, 125);
       set_range(62, 65, led_min, led_max, 0, 0, 125);
       set_range(31, 34, led_min, led_max, 0, 125, 0);
